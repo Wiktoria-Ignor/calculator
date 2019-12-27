@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>kalkulator</title>
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- style css-->
+	<style>
+		button{
+			width: 55px;
+			margin: 0;
+			user-select: none;
+		}
+
+		.display{
+			width: 230px;
+			height: 50px;
+			border-radius: 5px;
+			background-color: lightgray;
+			margin: 10px 0;
+			font-size: 30px;
+			text-align: end;
+			padding-right: 20px;
+			padding-left: 5px;
+		}
+
+		.container{
+			margin: 100px;
+		}
+	</style>
+</head>
+<body>
+
+	 <div class="container">
+
+		<div class="display" id="calc-display-val">0</div>
+		<table>
+			<tr>
+				<td><button type="button" class="btn btn-danger btn-lg" id="calc-clear">C</button></td>
+				<td><button type="button" class="btn btn-danger btn-lg" id="calc-backspace">CE</button></td>
+			</tr>
+			<tr>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">1</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">2</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">3</button></td>
+				<td><button type="button" class="btn btn-primary btn-lg calc-btn-operator">*</button></td>
+			</tr>
+			<tr>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">4</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">5</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">6</button></td>
+				<td><button type="button" class="btn btn-primary btn-lg calc-btn-operator">/</button></td>
+			</tr>
+			<tr>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">7</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">8</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">9</button></td>
+				<td><button type="button" class="btn btn-primary btn-lg calc-btn-operator">-</button></td>
+			</tr>
+			<tr>
+				<td><button type="button" class="btn btn-secondary btn-lg" id="calc-decimal">,</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-num">0</button></td>
+				<td><button type="button" class="btn btn-secondary btn-lg calc-btn-operator">=</button></td>
+				<td><button type="button" class="btn btn-primary btn-lg calc-btn-operator">+</button></td>
+			</tr>
+		</table>
+	</div>
+
+	<script>
+		
+		var decimalBtn  = document.getElementById('calc-decimal');
+		var clearBtn = document.getElementById('calc-clear');
+		var backspaceBtn = document.getElementById('calc-backspace');
+		var displayValElement  = document.getElementById('calc-display-val');
+		
+		var wynik = [];
+		var disp = [];
+		var displayVal;
+		var evaluation;
+
+
+		var calcNumBtns = document.getElementsByClassName('calc-btn-num');
+		var calcOperatorBtns = document.getElementsByClassName('calc-btn-operator');
+		
+		var updateDisplayVal = function(e){
+			var btnText;	
+			btnText = e.target.innerText;
+			
+			disp.push(btnText);
+			displayVal = disp.join('');
+	
+			wynik.push(btnText);
+			wynik.join('');
+			
+			if (displayVal.length > 14){
+					displayVal = displayVal.slice(0, 14);
+			}
+			
+			displayValElement.innerText = displayVal;
+
+		}
+		
+		var performOperation = function(e){
+			var operator = e.target.innerText;
+			
+			disp=[];
+			evaluation = eval(wynik.join(''));  
+			wynik=[];
+			wynik.push(evaluation);
+			
+			switch (operator) {
+					
+				case '+':
+					wynik.push('+');
+					break;
+					
+				case '-':
+					wynik.push('-');	
+					break;
+					
+				case '*':
+					wynik.push('*');	
+					break;
+					
+				case '/':
+					wynik.push('/');
+					break;
+					
+				case '=':
+					displayVal = evaluation+'';
+					if (displayVal.length > 14){
+						displayVal = displayVal.slice(0, 14);
+					}
+					displayValElement.innerText = displayVal;
+					disp.push(displayVal);
+					displayVal = '00';
+					evaluation='';
+					break;
+					
+				default:
+					break;	
+			}			
+		}
+		
+		for(let i=0; i<calcNumBtns.length; i++){
+			calcNumBtns[i].addEventListener('click', updateDisplayVal, false);
+		}
+		
+		for(let i=0; i<calcOperatorBtns.length; i++){
+			calcOperatorBtns[i].addEventListener('click', performOperation , false);
+		}
+		
+		clearBtn.onclick = function(){
+			displayVal ='0';
+			evaluation = 0;
+			disp = [];
+			wynik = [];
+			displayValElement.innerHTML = displayVal;
+		}
+		
+		backspaceBtn.onclick = function(){
+			displayVal = displayVal.slice(0, displayVal.length - 1); 
+			displayValElement.innerText = displayVal;
+			wynik.pop();			
+			disp.pop();
+		}
+		
+		decimalBtn.onclick = function(){
+			if(!displayVal.includes('.'))
+				disp.push('.');
+				wynik.push('.')
+				displayVal += '.';	
+			displayValElement.innerText = displayVal;
+		}
+		
+	</script>
+
+</body>
+	
+</html>
